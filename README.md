@@ -15,3 +15,8 @@ In order to ensure scalability a message-based queue system must be used for the
 the frontend and the backend.
 Configuration parameters shared across all the components of the application should be stored in a
 Zookeeper instance running in a container.
+#### References
+- HAproxy docker image: https://hub.docker.com/_/haproxy
+- HAproxy configuration: https://dzone.com/articles/how-to-configure-ha-proxy-as-a-proxy-and-loadbalan
+- Zookeeper container: https://hub.docker.com/_/zookeeper
+- Python Kazoo library to interact with Zookeeper: https://kazoo.readthedocs.io/en/latest/basic_usage.html#creating-nodes
