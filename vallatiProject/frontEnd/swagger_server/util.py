@@ -4,6 +4,16 @@ import six
 import typing
 
 
+# Global variables to save zookeeper information
+brokerAddr = ""
+brokerPort = ""
+brokerUser = ""
+brokerPsw = ""
+brokerConn = ""
+brokerChan = ""
+responseMsg = ""
+
+
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
 
@@ -141,8 +151,3 @@ def _deserialize_dict(data, boxed_type):
             for k, v in six.iteritems(data)}
 
 
-
-
-brokerAddr = ""
-brokerConn = ""
-brokerChan = ""

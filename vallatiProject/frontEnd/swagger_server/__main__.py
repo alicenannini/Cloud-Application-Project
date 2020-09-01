@@ -15,10 +15,16 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.debug("avviooooo main")
-    credentials = pika.PlainCredentials("root", "root")
+    logging.debug("starting front-end main")
+    
+    util.brokerUser = "root"
+    util.brokerPsw = "root"
+    credentials = pika.PlainCredentials(util.brokerUser, util.brokerPsw)
+    
     util.brokerAddr = "172.16.2.34"
-    parameters = pika.ConnectionParameters(util.brokerAddr, '5672', '/', credentials)
+    util.brokerPort = 5672
+    parameters = pika.ConnectionParameters(util.brokerAddr, util.brokerPort, '/', credentials)
+    
     util.brokerConn = pika.BlockingConnection(parameters)
     util.brokerChan = util.brokerConn.channel()
     main()
