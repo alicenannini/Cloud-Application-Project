@@ -17,6 +17,7 @@ def reconnect_to_broker():
     
 def callback(ch, method, properties, body):
     util.responseMsg = body.decode()
+    print(util.responseMsg)
     ct = ch.consumer_tags[0]
     ch.basic_cancel(consumer_tag=ct)
     
@@ -34,9 +35,10 @@ def addmail(body):  # noqa: E501
 
     if connexion.request.is_json:
         try:
-            body = Mail.from_dict(connexion.request.get_json())  # noqa: E501
-            message = "create//{}//{}//{}".format(body.sender, body.receiver, body.mail_text)
             result_queue = "results"
+            body = Mail.from_dict(connexion.request.get_json())  # noqa: E501
+            message = "create//{}//{}//{}//{}".format(body.sender, body.receiver, body.mail_text,result_queue)
+            
             util.brokerChan.queue_declare(queue='tasks')
             util.brokerChan.basic_publish(exchange='', routing_key='tasks', body=message)
 
@@ -72,8 +74,9 @@ def deletemail(mailId):  # noqa: E501
         return 'Invalid input', 405
     
     try:
-        message = "delete//"+str(mailId)
-        result_queue = "results"
+        result_queue = "results_delete"
+        message = "delete//{}//{}".format(mailId, result_queue)
+        
         util.brokerChan.queue_declare(queue='tasks')
         util.brokerChan.basic_publish(exchange='', routing_key='tasks', body=message)
 
@@ -106,8 +109,9 @@ def getmail_by_id(mailId):  # noqa: E501
         return 'Invalid input', 405
     
     try:
-        message = "read//"+str(mailId)
-        result_queue = "results"
+        result_queue = "results_read"
+        message = "read//{}//{}".format(mailId, result_queue)
+        
         util.brokerChan.queue_declare(queue='tasks')
         util.brokerChan.basic_publish(exchange='', routing_key='tasks', body=message)
 
@@ -126,22 +130,13 @@ def getmail_by_id(mailId):  # noqa: E501
         return 'Internal server error', 500
 
 
-def updatemail(body):  # noqa: E501
-    """Update an existing mail
-
-     # noqa: E501
-
-    :param body: mail object that needs to be added to the store
-    :type body: dict | bytes
-
-    :rtype: None
-    """
-    
+def updatemail(mailId,body):
     if connexion.request.is_json:
         try:
+            result_queue = "results_update"
+            
             body = Mail.from_dict(connexion.request.get_json())  # noqa: E501
-            message = "update//{}//{}//{}".format(body.sender, body.receiver, body.mail_text)
-            result_queue = "results"
+            message = "update//{}//{}//{}//{}//{}".format(mailId,body.sender, body.receiver, body.mail_text, result_queue)
             util.brokerChan.queue_declare(queue='tasks')
             util.brokerChan.basic_publish(exchange='', routing_key='tasks', body=message)
 
@@ -163,26 +158,32 @@ def updatemail(body):  # noqa: E501
     return 'do some magic!'
 
 
-def updatemail_with_form(mailId, name=None, status=None):  # noqa: E501
-    """Updates an mail in the store with form data
+def updatemail_with_form(mailId, sender, receiver, textMail):  # noqa: E501
+    """Updates a mail in the store with form data
 
      # noqa: E501
 
-    :param mailId: ID of employe that needs to be updated
+    :param mailId: ID of mail that needs to be updated
     :type mailId: int
-    :param name: Updated name of the mail
-    :type name: str
-    :param status: Updated status of the mail
-    :type status: str
+    :param sender: Updated sender of the mail
+    :type sender: str
+    :param receiver: Updated receiver of the mail
+    :type receiver: str
+    :param textMail: Updated text of the mail
+    :type textMail: str
 
     :rtype: None
     """
     if mailId < 0:
         return 'Invalid input', 405
+        
+    if sender is None:
+        return 'Invalid sender input', 405
     
     try:
-        message = "update//"+str(mailId)
+        message = "update//{}//{}//{}//{}".format(bstr(mailId), sender, receiver, mailText)
         result_queue = "results"
+        
         util.brokerChan.queue_declare(queue='tasks')
         util.brokerChan.basic_publish(exchange='', routing_key='tasks', body=message)
 
@@ -193,10 +194,7 @@ def updatemail_with_form(mailId, name=None, status=None):  # noqa: E501
         util.brokerChan.start_consuming()
         
         return util.responseMsg
-        
-    except ValueError:
-        return 'Invalid input', 405
     except pika.exceptions.StreamLostError:
         reconnect_to_broker()
-        return 'Internal server error', 500
+        return 'Internal server error', 501
 

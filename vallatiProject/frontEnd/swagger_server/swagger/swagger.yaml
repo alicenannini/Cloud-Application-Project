@@ -36,33 +36,6 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "swagger_server.controllers.mails_controller"
-    put:
-      tags:
-      - "mails"
-      summary: "Update an existing mail"
-      description: ""
-      operationId: "updatemail"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "mail object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/mail"
-      responses:
-        "400":
-          description: "Invalid ID supplied"
-        "404":
-          description: "mail not found"
-        "405":
-          description: "Validation exception"
-      x-swagger-router-controller: "swagger_server.controllers.mails_controller"
   /mails/{mailId}:
     get:
       tags:
@@ -90,7 +63,7 @@ paths:
         "404":
           description: "mail not found"
       x-swagger-router-controller: "swagger_server.controllers.mails_controller"
-    post:
+    put:
       tags:
       - "mails"
       summary: "Updates an mail in the store with form data"
@@ -104,18 +77,23 @@ paths:
       parameters:
       - name: "mailId"
         in: "path"
-        description: "ID of employe that needs to be updated"
+        description: "ID of mail that needs to be updated"
         required: true
         type: "integer"
         format: "int64"
-      - name: "name"
+      - name: "sender"
         in: "formData"
-        description: "Updated name of the mail"
+        description: "Updated sender of the mail"
         required: false
         type: "string"
-      - name: "status"
+      - name: "receiver"
         in: "formData"
-        description: "Updated status of the mail"
+        description: "Updated receiver of the mail"
+        required: false
+        type: "string"
+      - name: "mailText"
+        in: "formData"
+        description: "Updated text of the mail"
         required: false
         type: "string"
       responses:
@@ -143,6 +121,35 @@ paths:
           description: "Invalid ID supplied"
         "404":
           description: "mail not found"
+      x-swagger-router-controller: "swagger_server.controllers.mails_controller"
+    post:
+      tags:
+      - "mails"
+      summary: "Add a new mail"
+      description: ""
+      operationId: "updatemail"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "mailId"
+        in: "path"
+        description: "mail id to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "mail data"
+        required: true
+        schema:
+          $ref: "#/definitions/mail"
+      responses:
+        "405":
+          description: "Invalid input"
       x-swagger-router-controller: "swagger_server.controllers.mails_controller"
 definitions:
   mail:
