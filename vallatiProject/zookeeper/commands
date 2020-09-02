@@ -1,0 +1,32 @@
+docker run -d \
+   -p 2181:2181 \
+   -p 2888:2888 \
+   -p 3888:3888 \
+   --name myzk-1 \
+   -e ZOO_MY_ID=1 \
+   -e ZOO_SERVERS='server.1=0.0.0.0:2888:3888;2181 server.2=172.16.1.249:2888:3888;2181 server.3=172.16.2.57:2888:3888;2181' \
+    --restart always \
+    zookeeper
+
+docker run -d \
+   -p 2181:2181 \
+   -p 2888:2888 \
+   -p 3888:3888 \
+   --name myzk-2 \
+   -e ZOO_MY_ID=2 \
+   -e ZOO_SERVERS='server.1=172.16.3.50:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=172.16.2.57:2888:3888;2181' \
+    --restart always \
+    zookeeper
+
+docker run -d \
+   -p 2181:2181 \
+   -p 2888:2888 \
+   -p 3888:3888 \
+   --name myzk-3 \
+   -e ZOO_MY_ID=3 \
+   -e ZOO_SERVERS='server.1=172.16.3.50:2888:3888;2181 server.2=172.16.1.249:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181' \
+    --restart always \
+    zookeeper
+
+
+python zookeeper/zk_init.py 172.16.3.50:2181,172.16.1.249:2181,172.16.2.57:2181

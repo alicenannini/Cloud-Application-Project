@@ -1,21 +1,30 @@
-
+import kazoo
+from kazoo.client import KazooClient
 import mysql.connector
 import pika
 
 
 brokerAddr = ""
+brokerPort = ""
+brokerUser = ""
+brokerPsw = ""
 brokerConn = ""
 brokerChan = ""
+
+db_addr = ""
+db_user = ""
+db_psw = ""
+db_name = ""
 
 
 # CONNECT/DISCONNECT METHODS
 def connect():
   try:
     mydb = mysql.connector.connect(
-      host='172.16.2.57',
-      user='root',
-      password='newpassword',
-      database='mails'
+      host=db_addr,
+      user=db_user,
+      password=db_psw,
+      database=db_name
     )
     return mydb
   except mysql.connector.Error as err:
@@ -139,8 +148,12 @@ def callback(ch, method, properties, body):
     
     disconnect(db)
     
+
+
    
 def main():
+
+
     brokerChan.queue_declare(queue='tasks')
     brokerChan.basic_consume(queue='tasks', on_message_callback=callback, auto_ack=True)
     print('Back-end ready.')
@@ -148,13 +161,38 @@ def main():
 
 
 if __name__ == '__main__':
-    credentials = pika.PlainCredentials("root", "root")
-    brokerAddr = "172.16.2.34"
-    parameters = pika.ConnectionParameters(brokerAddr, '5672', '/', credentials)
+        
+    zk = KazooClient(hosts='172.16.3.50:2181,172.16.1.249:2181,172.16.2.57:2181', read_only=True)
+    zk.start()
+    #parameters for rabbitmq broker
+    data, stat = zk.get("/myApp/broker_addr")
+    brokerAddr = data.decode("utf-8")
+    data, stat = zk.get("/myApp/broker_port")
+    brokerPort = data.decode("utf-8")
+    data, stat = zk.get("/myApp/broker_user")
+
+    brokerUser = data.decode("utf-8")
+    data, stat = zk.get("/myApp/broker_psw")
+    brokerPsw = data.decode("utf-8")
+    #parameters to connect the db
+    data, stat = zk.get("/myApp/db_addr")
+    db_addr = data.decode("utf-8")
+    data, stat = zk.get("/myApp/db_user")
+    db_user = data.decode("utf-8")
+    data, stat = zk.get("/myApp/db_psw")
+    db_psw = data.decode("utf-8")
+    data, stat = zk.get("/myApp/db_name")
+    db_name = data.decode("utf-8")
+    
+    zk.stop()
+    
+    
+    credentials = pika.PlainCredentials(brokerUser, brokerPsw)
+    parameters = pika.ConnectionParameters(brokerAddr, brokerPort, '/', credentials)
     brokerConn = pika.BlockingConnection(parameters)
     brokerChan = brokerConn.channel()
     main()
-
+    
 
     
     

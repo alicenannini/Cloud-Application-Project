@@ -1,6 +1,5 @@
 import connexion
 import six
-
 import pika
 
 from swagger_server.models.mail import Mail  # noqa: E501

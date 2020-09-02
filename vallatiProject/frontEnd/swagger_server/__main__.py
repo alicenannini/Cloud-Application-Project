@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+from kazoo.client import KazooClient
 import connexion
 import pika
 import logging
@@ -17,13 +17,21 @@ def main():
 if __name__ == '__main__':
     logging.debug("starting front-end main")
     
-    util.brokerUser = "root"
-    util.brokerPsw = "root"
+    zk = KazooClient(hosts='172.16.3.50:2181,172.16.1.249:2181,172.16.2.57:2181', read_only=True)
+    zk.start()
+    
+    data, stat = zk.get("/myApp/broker_user")
+    util.brokerUser = data.decode("utf-8")
+    data, stat = zk.get("/myApp/broker_psw")
+    util.brokerPsw = data.decode("utf-8")
     credentials = pika.PlainCredentials(util.brokerUser, util.brokerPsw)
     
-    util.brokerAddr = "172.16.2.34"
-    util.brokerPort = 5672
+    data, stat = zk.get("/myApp/broker_addr")
+    util.brokerAddr = data.decode("utf-8")
+    data, stat = zk.get("/myApp/broker_port")
+    util.brokerPort = data.decode("utf-8")
     parameters = pika.ConnectionParameters(util.brokerAddr, util.brokerPort, '/', credentials)
+    zk.stop()
     
     util.brokerConn = pika.BlockingConnection(parameters)
     util.brokerChan = util.brokerConn.channel()
