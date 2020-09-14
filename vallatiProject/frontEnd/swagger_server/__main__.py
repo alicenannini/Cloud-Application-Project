@@ -3,6 +3,7 @@ from kazoo.client import KazooClient
 import connexion
 import pika
 import logging
+import socket
 from swagger_server import util
 from swagger_server import encoder
 
@@ -33,6 +34,7 @@ if __name__ == '__main__':
     parameters = pika.ConnectionParameters(util.brokerAddr, util.brokerPort, '/', credentials)
     zk.stop()
     
+    util.myAddr = socket.gethostbyname(socket.gethostname())
     util.brokerConn = pika.BlockingConnection(parameters)
     util.brokerChan = util.brokerConn.channel()
     main()

@@ -1,6 +1,7 @@
 import connexion
 import six
 import pika
+import socket
 
 from swagger_server.models.mail import Mail  # noqa: E501
 from swagger_server import util
@@ -34,7 +35,7 @@ def addmail(body):  # noqa: E501
 
     if connexion.request.is_json:
         try:
-            result_queue = "results"
+            result_queue = "results" + util.myAddr
             body = Mail.from_dict(connexion.request.get_json())  # noqa: E501
             message = "create//{}//{}//{}//{}".format(body.sender, body.receiver, body.mail_text,result_queue)
             
@@ -73,7 +74,7 @@ def deletemail(mailId):  # noqa: E501
         return 'Invalid input', 405
     
     try:
-        result_queue = "results_delete"
+        result_queue = "results" + util.myAddr
         message = "delete//{}//{}".format(mailId, result_queue)
         
         util.brokerChan.queue_declare(queue='tasks')
@@ -108,7 +109,7 @@ def getmail_by_id(mailId):  # noqa: E501
         return 'Invalid input', 405
     
     try:
-        result_queue = "results_read"
+        result_queue = "results" + util.myAddr
         message = "read//{}//{}".format(mailId, result_queue)
         
         util.brokerChan.queue_declare(queue='tasks')
@@ -132,7 +133,7 @@ def getmail_by_id(mailId):  # noqa: E501
 def updatemail(mailId,body):
     if connexion.request.is_json:
         try:
-            result_queue = "results_update"
+            result_queue = "results" + util.myAddr
             
             body = Mail.from_dict(connexion.request.get_json())  # noqa: E501
             message = "update//{}//{}//{}//{}//{}".format(mailId,body.sender, body.receiver, body.mail_text, result_queue)
@@ -181,7 +182,7 @@ def updatemail_with_form(mailId, sender, receiver, textMail):  # noqa: E501
     
     try:
         message = "update//{}//{}//{}//{}".format(bstr(mailId), sender, receiver, mailText)
-        result_queue = "results"
+        result_queue = "results" + util.myAddr
         
         util.brokerChan.queue_declare(queue='tasks')
         util.brokerChan.basic_publish(exchange='', routing_key='tasks', body=message)

@@ -12,6 +12,7 @@ brokerPsw = ""
 brokerConn = ""
 brokerChan = ""
 responseMsg = ""
+myAddr = ""
 
 
 def _deserialize(data, klass):
