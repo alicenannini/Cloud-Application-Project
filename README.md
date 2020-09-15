@@ -23,6 +23,9 @@ Zookeeper instance running in a container.
 
 ## Containers location
 172.16.1.249: myfe, myzk-2
+
 172.16.2.34: mymb, haproxy
+
 172.16.2.57: myfe, mybe, mydb, myzk-3
+
 172.16.3.50: mybe, myzk-1
