@@ -1,2 +1,0 @@
-FROM rabbitmq:3
-EXPOSE 5672
