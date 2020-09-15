@@ -20,3 +20,9 @@ Zookeeper instance running in a container.
 - HAproxy configuration: https://dzone.com/articles/how-to-configure-ha-proxy-as-a-proxy-and-loadbalan
 - Zookeeper container: https://hub.docker.com/_/zookeeper
 - Python Kazoo library to interact with Zookeeper: https://kazoo.readthedocs.io/en/latest/basic_usage.html#creating-nodes
+
+## Containers location
+172.16.1.249: myfe, myzk-2
+172.16.2.34: mymb, haproxy
+172.16.2.57: myfe, mybe, mydb, myzk-3
+172.16.3.50: mybe, myzk-1

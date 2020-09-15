@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.8.17)  15 SEP 2020 12:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.8.17)  15 SEP 2020 19:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**docVallati.tex
+**doc
 (./docVallati.tex
 LaTeX2e <2020-02-02> patch level 2
 L3 programming layer <2020-02-14>
@@ -110,11 +110,11 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 
 [1]
-<./img/architecture.png, id=13, 674.52pt x 744.7825pt>
+<./img/architecture.png, id=13, 614.295pt x 653.44125pt>
 File: ./img/architecture.png Graphic file (type png)
 <use ./img/architecture.png>
 Package pdftex.def Info: ./img/architecture.png  used on input line 53.
-(pdftex.def)             Requested size: 283.46115pt x 312.9803pt.
+(pdftex.def)             Requested size: 294.23022pt x 312.9803pt.
  [2
 
 ]
@@ -149,13 +149,13 @@ ser='root';[]
 
 [6 <./img/mysql.png (PNG copy)>] [7] [8] (./docVallati.aux) ) 
 Here is how much of TeX's memory you used:
- 1194 strings out of 483183
- 17670 string characters out of 5966292
+ 1195 strings out of 483183
+ 17673 string characters out of 5966292
  248021 words of memory out of 5000000
  16241 multiletter control sequences out of 15000+600000
  535303 words of font info for 34 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 30i,6n,25p,442b,255s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,6n,25p,431b,255s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/alice/.tex
 live2019/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/tex
@@ -164,7 +164,7 @@ t/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmtt10.pfb>
-Output written on docVallati.pdf (9 pages, 194804 bytes).
+Output written on docVallati.pdf (9 pages, 175790 bytes).
 PDF statistics:
  68 PDF objects out of 1000 (max. 8388607)
  45 compressed objects within 1 object stream

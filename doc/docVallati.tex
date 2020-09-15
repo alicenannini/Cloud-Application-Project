@@ -89,7 +89,7 @@ In particular, the last block (MyAppBackend) is the one in which we configured o
 \end{itemize}
 \subsection{Commands}  
 \begin{verbatim}
-    docker build -t ha balanceTier/
+    docker build -t ha loadBalancer/
     docker run -d -p 8080:80 -p 9999:9999 --name haproxy ha
 \end{verbatim}
 
@@ -114,7 +114,7 @@ The message queuing system handles only direct exchanges; there are 5 queues, th
 Finally, to make the server reachable remotely, a new user (\textit{root}) with all the possible credentials has been created and registered to the server.
 \subsection{Commands}
 \begin{verbatim}
-    docker build -t mb messagebroker/
+    docker build -t mb broker/
     docker run -d -p 5672:5672 --name mymb mb
     docker exec mymb rabbitmqctl add_user root root
     docker exec mymb rabbitmqctl set_user_tags root administrator

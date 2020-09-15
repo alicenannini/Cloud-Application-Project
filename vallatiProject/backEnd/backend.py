@@ -30,7 +30,6 @@ def connect():
   except mysql.connector.Error as err:
     print("Something went wrong: {}".format(err))
     return None
-    
 
 
 def disconnect(mydb):
@@ -38,13 +37,7 @@ def disconnect(mydb):
 
 
 
-def getMails(mydb):
-  mycursor = mydb.cursor()
-  mycursor.execute("SELECT id FROM mails")
-  return mycursor.fetchall()
-
-
-
+# METHODS TO WORK ON THE DB
 def postMail(mydb, sender, receiver, text):
   if(mydb == None):
     print("connessione none")
@@ -60,11 +53,10 @@ def postMail(mydb, sender, receiver, text):
     return False
 
 
-
 def deleteMail(mydb, id):
   mycursor = mydb.cursor()
   sql =  "DELETE FROM mails WHERE mails.id = %s";
-  val = (str(id),)
+  val = (str(id))
   try:
     mycursor.execute(sql, val)
     mydb.commit()
@@ -73,18 +65,21 @@ def deleteMail(mydb, id):
     mydb.rollback()
     return False
 
-# ----------------------------------------------------------------------------------------------------------------------
 
 def getMail(mydb, id):
   mycursor = mydb.cursor()
   sql = "SELECT * FROM mails WHERE id = %s"
-  val = (str(id),)
+  val = (str(id))
   try:
     mycursor.execute(sql, val)
-    return mycursor.fetchall()
+    rowcount = mycursor.rowcount
+    if rowcount == 0:
+      return None
+    else:
+      return mycursor.fetchall()
+      
   except mysql.connector.Error as e:
     return None
-
 
 
 def putMail(mydb, id, sender, receiver, text):
@@ -115,10 +110,10 @@ def callback(ch, method, properties, body):
     ch.queue_declare(stringQueue)
     
     if(params[0] == 'create'):
-        #if(len(params) == 5):
-        print('create')
-        created = postMail(db, params[1], params[2], params[3])
-        ch.basic_publish(exchange = '', routing_key = stringQueue, body = '{"created": ' + str(created) + '}')
+        if(len(params) == 5):
+          print('create')
+          created = postMail(db, params[1], params[2], params[3])
+          ch.basic_publish(exchange = '', routing_key = stringQueue, body = '{"created": ' + str(created) + '}')
     
     elif(params[0] == 'update'):
         if(len(params) == 6):
@@ -150,14 +145,7 @@ def callback(ch, method, properties, body):
     
 
 
-   
-def main():
-
-
-    brokerChan.queue_declare(queue='tasks')
-    brokerChan.basic_consume(queue='tasks', on_message_callback=callback, auto_ack=True)
-    print('Back-end ready.')
-    brokerChan.start_consuming()
+    
 
 
 if __name__ == '__main__':
@@ -191,7 +179,11 @@ if __name__ == '__main__':
     parameters = pika.ConnectionParameters(brokerAddr, brokerPort, '/', credentials)
     brokerConn = pika.BlockingConnection(parameters)
     brokerChan = brokerConn.channel()
-    main()
+    
+    brokerChan.queue_declare(queue='tasks')
+    brokerChan.basic_consume(queue='tasks', on_message_callback=callback, auto_ack=True)
+    print('Backend is running')
+    brokerChan.start_consuming()
     
 
     

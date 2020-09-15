@@ -1,11 +1,16 @@
+import logging
+import sys
 from kazoo.client import KazooClient
 
+logging.basicConfig(level=logging.DEBUG)
+
+
 if len(sys.argv) < 2:
-    print("Not enough parameters")
+    print("Not enough input parameters")
     exit(1)
 
 #Create a KazooClient object and establish a connection
-zk = KazooClient(hosts=sys.argv[1], read_only=True)
+zk = KazooClient(hosts=sys.argv[1], read_only=True, logger=logging)
 zk.start()
 
 path = "/myApp"
